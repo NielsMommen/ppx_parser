@@ -10,16 +10,30 @@ let rec map_expr_to_pat ~loc = function
   | {pexp_desc = Pexp_ident {txt = Lident var; loc = var_loc}; pexp_loc = ident_loc; _} ->
     Ast_builder.Default.ppat_var ~loc:ident_loc {txt = var; loc = var_loc}
   | {pexp_desc = Pexp_tuple es; pexp_loc = loc; _} ->
-    let vars = es |> List.map (fun e -> map_expr_to_pat ~loc:e.pexp_loc e) in
-    Ast_builder.Default.ppat_tuple ~loc vars
+    let pats = es |> List.map (fun e -> map_expr_to_pat ~loc:e.pexp_loc e) in
+    Ast_builder.Default.ppat_tuple ~loc pats
   | {pexp_desc = Pexp_record (es, None); _} ->
-    let vars = es |> List.map (fun (l, e) -> l, map_expr_to_pat ~loc:e.pexp_loc e) in
-    Ast_builder.Default.ppat_record ~loc vars Closed
+    let pats = es |> List.map (fun (l, e) -> l, map_expr_to_pat ~loc:e.pexp_loc e) in
+    Ast_builder.Default.ppat_record ~loc pats Closed
   | {pexp_desc = Pexp_constraint (e, ct); pexp_loc = loc; _} ->
-    let var = map_expr_to_pat ~loc:e.pexp_loc e in
-    Ast_builder.Default.ppat_constraint ~loc var ct
+    let pat = map_expr_to_pat ~loc:e.pexp_loc e in
+    Ast_builder.Default.ppat_constraint ~loc pat ct
+  | {pexp_desc = Pexp_constant c; pexp_loc = loc; _} ->
+    Ast_builder.Default.ppat_constant ~loc c
+  | {pexp_desc = Pexp_construct (l, e_opt); pexp_loc = loc; _} ->
+    let pat_opt = e_opt |> Option.map (fun e -> map_expr_to_pat ~loc:e.pexp_loc e) in
+    Ast_builder.Default.ppat_construct ~loc l pat_opt
+  | {pexp_desc = Pexp_variant (l, e_opt); pexp_loc = loc; _} ->
+    let pat_opt = e_opt |> Option.map (fun e -> map_expr_to_pat ~loc:e.pexp_loc e) in
+    Ast_builder.Default.ppat_variant ~loc l pat_opt
+  | {pexp_desc = Pexp_array es; pexp_loc = loc; _} ->
+    let pats = es |> List.map (fun e -> map_expr_to_pat ~loc:e.pexp_loc e) in
+    Ast_builder.Default.ppat_array ~loc pats
+  | {pexp_desc = Pexp_lazy e; pexp_loc = loc; _} ->
+    let pat = map_expr_to_pat ~loc:e.pexp_loc e in
+    Ast_builder.Default.ppat_lazy ~loc pat
   | _ ->
-    Err.err_pat_node ~loc "Expected an identifier 'x', tuple '( )', record '{ }' or constraint 'a: b'."
+    Err.err_pat_node ~loc "Expected an expression that can be mapped to a pattern."
 
 module Make(Args: LetArgs) = 
   struct

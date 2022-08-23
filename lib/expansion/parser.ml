@@ -55,7 +55,7 @@ let expand_list_seq ~loc {pc_lhs; pc_guard; pc_rhs} to_match_expr other_cases =
       to_match_expr, {pc_lhs = pat; pc_guard; pc_rhs = on_match_expr} :: other_cases
     end
   | _ -> 
-    Err.err_expr_node ~loc:pc_lhs.ppat_loc "Expected a list of patterns.", other_cases
+    Err.err_expr_node ~loc:pc_lhs.ppat_loc "Expected a case where the left-hand side is a list of patterns.", other_cases
 
 let expand_function_cases ~loc cases =
   let pk = [%expr Stream.peek ppx____parser____stream____] in
