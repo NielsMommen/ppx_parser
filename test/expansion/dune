@@ -1,0 +1,4 @@
+(library
+ (name expansion_test)
+ (preprocess (pps ppxlib.metaquot ppx_parser))
+ (libraries ppxlib ppx_parser alcotest))

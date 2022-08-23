@@ -1,0 +1,4 @@
+(library
+ (name let_test)
+ (preprocess (pps ppxlib.metaquot ppx_parser))
+ (libraries ppxlib ppx_parser common alcotest))
