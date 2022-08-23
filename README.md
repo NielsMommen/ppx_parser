@@ -102,8 +102,8 @@ and parse_expr = function%parser
 let rec parse_expr = function%parser
     | [Int i; [%let op =
         let parse_op lhs = function%parser
-            | [Add; [%let rhs = parse_expr]] -> lhs + rhs
-            | [Sub; [%let rhs = parse_expr]] -> lhs - rhs
+            | [Add; parse_expr as rhs] -> lhs + rhs
+            | [Sub; parse_expr as rhs] -> lhs - rhs
             | [] -> lhs
         in
         parse_op i
