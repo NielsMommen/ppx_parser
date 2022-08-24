@@ -1,3 +1,5 @@
+open Util
+
 module type LetArgs =
   sig
     val on_fail: loc:Ppxlib.Location.t -> Ppxlib.expression
@@ -33,7 +35,17 @@ let rec map_expr_to_pat ~loc = function
     let pat = map_expr_to_pat ~loc:e.pexp_loc e in
     Ast_builder.Default.ppat_lazy ~loc pat
   | _ ->
-    Err.err_pat_node ~loc "Expected an expression that can be mapped to a pattern."
+    Err.err_pat_node ~loc 
+    "Expected an expression that can be mapped to a pattern:
+  - identifier 'x'
+  - constant '1'
+  - tuple '(a, b, ...)'
+  - construct 'SomeConstruct (...)'
+  - record '{field_a; field_b; ...}'
+  - constraint '... : int'
+  - variant '`SomeVariant'
+  - array '{| ... |}'
+  - lazy 'lazy ... '"
 
 module Make(Args: LetArgs) = 
   struct
@@ -88,7 +100,7 @@ module LetHd = Make(
 
 module LetTl = Make(
   struct
-    let on_fail ~loc = [%expr raise (Stream.Error "Parse error.")]
+    let on_fail ~loc = raise_err_exn ~loc
     let map_try_expr ~loc:_ e = e
   end
 )

@@ -107,6 +107,6 @@ let tests2 =
   let testble = Alcotest.testable (fun fmt a -> show_ast a |> Format.pp_print_string fmt) equal_ast in
   [
     "1 + 2 - 5 + 3", Plus (Minus (Plus (Int 1, Int 2), Int 5), Int 3);
-    "( 1 + 2 + 3 * 4) - 567", Minus (Plus (Plus (Int 1, Int 2), Mult (Int 3, Int 4)), Int 567);
+    "(1 + 2 + 3 * 4) - 567", Minus (Plus (Plus (Int 1, Int 2), Mult (Int 3, Int 4)), Int 567);
     "1 + (3 * 2 + 1 + 5 / 2) * 8 - 3", Minus (Plus (Int 1, Mult (Plus (Plus (Mult (Int 3, Int 2), Int 1), Div (Int 5, Int 2)), Int 8)), Int 3);
   ] |> List.map (mk_test testble calc2)

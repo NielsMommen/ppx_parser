@@ -85,17 +85,18 @@ let stream = Stream.of_list [Int 1; Add; Int 3; Sub; Int 2]
 let result = parse_expr stream
 (* 2 *)
 ```
-#### ... `as` ...
-An alias can be used when the right-hand sing of the binding is a simple function name:
-```ocaml
-let rec parse_op lhs = function% parser
-    | [Add; parse_expr as rhs] -> lhs + rhs
-    | [Sub; parse_expr as rhs] -> lhs - rhs
-    | [] -> lhs
 
-and parse_expr = function%parser
-    | [Int i; [%let op = parse_op i]] -> op
-```
+The left-hand side can be any expression that can be mapped to a pattern:
+  - identifier: `x`
+  - constant  `1`
+  - tuple `(a, b, ...)`
+  - construct `SomeConstruct (...)`
+  - record `{field_a; field_b; ...}`
+  - constraint `... : int`
+  - variant `` `SomeVariant``
+  - array `{| ... |}`
+  - lazy `lazy ... `
+
 #### `let` ... `in` ...
 `let` expressions can be used inside `%let` extensions:
 ```ocaml
@@ -108,4 +109,16 @@ let rec parse_expr = function%parser
         in
         parse_op i
     ]] -> op
+```
+
+#### ... `as` ...
+An alias can be used when the right-hand sing of the binding is a simple function name:
+```ocaml
+let rec parse_op lhs = function% parser
+    | [Add; parse_expr as rhs] -> lhs + rhs
+    | [Sub; parse_expr as rhs] -> lhs - rhs
+    | [] -> lhs
+
+and parse_expr = function%parser
+    | [Int i; [%let op = parse_op i]] -> op
 ```

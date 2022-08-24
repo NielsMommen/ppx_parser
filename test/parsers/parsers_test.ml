@@ -126,7 +126,7 @@ type ('a, 'b) record_tuple = {
 }
 [@@deriving show, eq]
 
-(* bind result of parsre call to a record inside a '%let' extension. *)
+(* (1) bind result of parser call to a record inside a '%let' extension. *)
 let split_rec_tuple_fields =
   let rec p r = function%parser
   | [ {rt_a; rt_b}; [%let {rt_a = a; rt_b = b} (* 1 *) = p {rt_a = rt_a :: r.rt_a; rt_b = rt_b :: r.rt_b}] ] -> {rt_a = b; rt_b = a}
@@ -159,11 +159,11 @@ let test_bindings () =
   let [@warning "-8"] parser = 
     function%parser
     | [ [%let 1 = get_const_one]; [%let (a, 2) = get_tuple_one_two] ] -> a
-    | [ 2; [%let {rt_b; rt_a} = get_rec_tuple_one_two]; [%let Some x = get_some_one] ] -> rt_b + rt_a + x
+    | [ [%let {rt_b; rt_a} = get_rec_tuple_one_two]; [%let Some x = get_some_one] ] -> rt_b + rt_a + x
     | [ 3; [%let None = get_none]; [%let Int x = get_int_lit_one]; ] -> x
     | [ 4; [%let [| a; b; c |] = get_arr]; [%let lazy x = get_lazy] ] -> a + b + c + x
   in
-  let strm = Stream.of_list [2; 3; 4] in
+  let strm = Stream.of_list [3; 4] in
   let expected = [1; 4; 1; 9] in
   let actual = [parser strm; parser strm; parser strm; parser strm] in
   Alcotest.(check' (list int)) ~msg:"pattern bindings" ~expected ~actual
