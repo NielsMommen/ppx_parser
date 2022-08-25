@@ -280,6 +280,52 @@ let test_or_pat_alias_parser () =
   in
   check_eq ~expected ~actual "or_pat_alias"
 
+let test_peek_call_alternate_parser () =
+  let actual = f [%expr   
+    function%parser
+    | [1; 2] -> 3
+    | [some_call as c; 4] -> c + 5
+    | [6; 7] -> 8
+    | [some_call as a; some_call as b] -> a + b + 9
+  ]
+  in
+  let expected = [%expr
+    function ppx____parser____stream____ ->
+      match [%e peek] with
+      | Some 1 ->
+        let () = [%e junk] in
+        (match [%e peek] with
+        | Some 2 ->
+          let () = [%e junk] in
+          3
+        | _ -> [%e raise_err_exn])
+      | _ ->
+        (match try Some (some_call ppx____parser____stream____) with Stream.Failure -> None with
+        | Some c ->
+          (match [%e peek] with
+          | Some 4 ->
+            let () = [%e junk] in
+            c + 5
+          | _ -> [%e raise_err_exn])
+        | _ ->
+          (match [%e peek] with
+          | Some 6 ->
+            let () = [%e junk] in
+            (match [%e peek] with
+            | Some 7 ->
+              let () = [%e junk] in
+              8
+            | _ -> [%e raise_err_exn])
+          | _ ->
+            (match try Some (some_call ppx____parser____stream____) with Stream.Failure -> None with
+            | Some a ->
+              let b = try some_call ppx____parser____stream____ with Stream.Failure -> [%e raise_err_exn] in
+              a + b + 9
+            | _ -> [%e raise_fail_exn])))
+  ]
+  in
+  check_eq ~expected ~actual "peek_call_alternate"
+
 let tests = let open Alcotest in [
   test_case "alias" `Quick test_alias_parser;
   test_case "call_alias" `Quick test_call_alias_parser;
@@ -291,4 +337,5 @@ let tests = let open Alcotest in [
   test_case "parser_calls" `Quick test_parser_calls_parser;
   test_case "or_pat_alias" `Quick test_or_pat_alias_parser;
   test_case "bind_pats" `Quick test_bind_pats_parser;
+  test_case "peek_call_alternate" `Quick test_peek_call_alternate_parser;
 ]
