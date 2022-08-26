@@ -13,10 +13,6 @@ let expand_list_elem ~loc cont_expr = function
     let var_pat = Ast_builder.Default.ppat_var ~loc:as_loc as_label in
     let fn_ident = Ast_builder.Default.pexp_ident ~loc:call_loc ({txt = Lident call; loc}) in 
     try_with_fail_in ~loc var_pat fn_ident cont_expr
-  | {ppat_desc = Ppat_var ({txt = call; _}); ppat_loc = call_loc; _} ->
-    let var_pat = [%pat? _] in
-    let fn_ident = Ast_builder.Default.pexp_ident ~loc:call_loc ({txt = Lident call; loc}) in
-    try_with_fail_in ~loc var_pat fn_ident cont_expr
   | {ppat_desc = Ppat_extension ({txt = "let" | "l"; _}, payload); ppat_loc; _ } ->
     let e, pat = Let.expand_let_payload_tl ~loc:ppat_loc payload in
     [%expr let [%p pat] = [%e e] in [%e cont_expr]]

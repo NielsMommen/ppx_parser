@@ -40,7 +40,7 @@ module Calc2 =
   [@@deriving show, eq]
 
     let rec spaces = function%parser
-    | [ ' ' | '\t' | '\n'; spaces] -> ()
+    | [ ' ' | '\t' | '\n'; spaces as _s] -> ()
     | [ ] -> ()
 
     let int_of_digit = function
@@ -53,13 +53,13 @@ module Calc2 =
 
     let lexer s =
       let p = function%parser
-      | [ '('; spaces ] -> Some LPAR
-      | [ ')'; spaces ] -> Some RPAR
-      | [ '+'; spaces ] -> Some PLUS
-      | [ '-'; spaces ] -> Some MINUS
-      | [ '*'; spaces ] -> Some TIMES
-      | [ '/'; spaces ] -> Some DIV
-      | [ '0' .. '9' as c; [%l n = (integer (int_of_digit c))]; spaces ] -> Some (INT n)
+      | [ '('; spaces as _s ] -> Some LPAR
+      | [ ')'; spaces as _s ] -> Some RPAR
+      | [ '+'; spaces as _s ] -> Some PLUS
+      | [ '-'; spaces as _s ] -> Some MINUS
+      | [ '*'; spaces as _s ] -> Some TIMES
+      | [ '/'; spaces as _s ] -> Some DIV
+      | [ '0' .. '9' as c; [%l n = (integer (int_of_digit c))]; spaces as _s ] -> Some (INT n)
       | [ ] -> None
       in
       Stream.from (fun _ -> p s)

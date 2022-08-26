@@ -87,7 +87,7 @@ let test_seq_parser () =
 let test_no_bind_call_parser () =
   let actual = f [%expr  
     function%parser
-    | [ ' ' | '\t' | '\n'; spaces] -> ()
+    | [ ' ' | '\t' | '\n'; spaces as _s] -> ()
     | [ ] -> ()
   ]
   in
@@ -96,7 +96,7 @@ let test_no_bind_call_parser () =
       match [%e peek] with
       | Some (' ' | '\t' | '\n') ->
         let () = [%e junk] in
-        let _ = try spaces ppx____parser____stream____ with Stream.Failure -> [%e raise_err_exn] in
+        let _s = try spaces ppx____parser____stream____ with Stream.Failure -> [%e raise_err_exn] in
         ()
       | _ -> ()
   ]

@@ -1,7 +1,7 @@
-(* (1) Ignore the result of a parser call when it is a simple function name. *)
+(* (1) Ignore the result of a parser call. *)
 let rec consume_spaces = 
   function%parser
-  | [ ' ' | '\t' | '\n'; consume_spaces (* (1) *) ] -> ()
+  | [ ' ' | '\t' | '\n'; consume_spaces as _c (* (1) *) ] -> ()
   | [ ] -> ()
 
 let test_consume_spaces () =
