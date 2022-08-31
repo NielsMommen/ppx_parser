@@ -1,5 +1,6 @@
 (library
- (public_name ppx_parser)
+ (name ppx_parser_lib)
+ (public_name ppx_parser.lib)
  (kind ppx_rewriter)
  (libraries ppxlib expansion)
   (preprocess
