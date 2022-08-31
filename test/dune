@@ -1,4 +1,12 @@
 (test
  (name test)
- (preprocess (pps ppxlib.metaquot))
- (libraries ppxlib ppx_parser alcotest calc_test parser_test let_test parsers_test))
+ (preprocess
+  (pps ppxlib.metaquot))
+ (libraries
+  ppxlib
+  ppx_parser
+  alcotest
+  calc_test
+  parser_test
+  let_test
+  parsers_test))

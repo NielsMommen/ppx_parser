@@ -2,6 +2,5 @@
  (name ppx_parser_lib)
  (public_name ppx_parser.lib)
  (libraries ppxlib)
-  (preprocess
-  (pps ppxlib.metaquot))
- )
+ (preprocess
+  (pps ppxlib.metaquot)))

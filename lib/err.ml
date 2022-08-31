@@ -1,4 +1,4 @@
-open Ppxlib 
+open Ppxlib
 
 let err_expr_node ~loc msg =
   Location.error_extensionf ~loc msg |> Ast_builder.Default.pexp_extension ~loc
