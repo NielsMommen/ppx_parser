@@ -7,7 +7,7 @@ let parser_extension =
     "parser"
     Extension.Context.expression
     ppx_parser_pat
-    Expansion.Parser.expand_function_from_ctxt
+    Ppx_parser_lib.Parser.expand_function_from_ctxt
 
 let parser_rule = Context_free.Rule.extension parser_extension
 

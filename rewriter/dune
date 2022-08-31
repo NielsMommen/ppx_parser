@@ -1,0 +1,6 @@
+(library
+ (name ppx_parser)
+ (public_name ppx_parser)
+ (kind ppx_rewriter)
+ (libraries ppx_parser_lib ppxlib)
+)

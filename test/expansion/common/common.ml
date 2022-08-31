@@ -19,6 +19,6 @@ let f e =
   Ast_pattern.parse
     parser_ext_pat
     e.pexp_loc
-    ~on_error:(fun () -> Expansion.Err.err_expr_node ~loc:e.pexp_loc "Invalid test pattern.")
+    ~on_error:(fun () -> Ppx_parser_lib.Err.err_expr_node ~loc:e.pexp_loc "Invalid test pattern.")
     e
-    (Expansion.Parser.expand_function ~loc)
+    (Ppx_parser_lib.Parser.expand_function ~loc)
