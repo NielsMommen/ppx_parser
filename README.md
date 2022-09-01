@@ -1,5 +1,5 @@
 # ppx_parser
-`ppx_parser` is an `OCaml` ppx extension that lets you write parsers *à la* `Camlp4` parser notation. It can be used as a replacement for projects that still use Camlp4 stream parsers. For new projects, it is advised to use lexer and parser generators.
+`ppx_parser` is an `OCaml` ppx extension that lets you write parsers *à la* `Camlp4` stream parser notation. It can be used as a replacement for projects that still use Camlp4 stream parsers. For new projects, it is advised to use lexer and parser generators.
 
 ## Example
 Following `Camlp4` stream parser
@@ -9,8 +9,8 @@ type tok = Int of int | True | False | If | Then | Else | Let | In | Equal | Ide
 type expr = IntLit of int | BoolLit of bool | IfThenExpr of expr * expr * expr | LetInExpr of expr * expr
 
 let rec parse_expr = parser
-    | [< 'If; i = expr; 'Then; t = expr; 'Else; e = expr >] -> IfThen (i, t, e)
-    | [< 'Let; 'Ident x; 'Equal; e = expr; 'In; i = expr >] -> LetIn (l, i)
+    | [< 'If; i = expr; 'Then; t = expr; 'Else; e = expr >] -> IfThenExpr (i, t, e)
+    | [< 'Let; 'Ident x; 'Equal; e = expr; 'In; i = expr >] -> LetInExpr (l, i)
     | [< 'Int i >] -> IntLit i
     | [< 'True >] -> BoolLit true
     | [< 'False >] -> BoolLit false
@@ -18,8 +18,8 @@ let rec parse_expr = parser
 can be written as
 ```ocaml
 let rec parse_expr = function%parser
-    | [ If; expr as i; Then; expr as t; Else; expr as e] -> IfThen (i, t, e)
-    | [ Let; Ident x; Equal; expr as e; In; expr as i] -> Let (l, i)
+    | [ If; expr as i; Then; expr as t; Else; expr as e] -> IfThenExpr (i, t, e)
+    | [ Let; Ident x; Equal; expr as e; In; expr as i] -> LetInExpr (l, i)
     | [Int i] -> IntLit i
     | [True] -> BoolLit true
     | [False] -> BoolLit false
