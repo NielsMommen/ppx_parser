@@ -2,4 +2,4 @@
  (name calc_test)
  (preprocess
   (pps ppx_parser ppx_deriving.show ppx_deriving.eq))
- (libraries ppx_parser alcotest))
+ (libraries ppx_parser alcotest camlp-streams))

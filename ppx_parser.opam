@@ -17,11 +17,12 @@ tags: ["stream parser"]
 homepage: "https://github.com/NielsMommen/ppx_parser"
 bug-reports: "https://github.com/NielsMommen/ppx_parser/issues"
 depends: [
-  "ocaml"
+  "ocaml" {>= "4.13.0"}
   "dune" {>= "3.4"}
   "ppxlib"
   "alcotest" {with-test}
   "ppx_deriving" {with-test}
+  "camlp-streams" {with-test}
   "odoc" {with-doc}
 ]
 build: [

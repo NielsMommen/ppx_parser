@@ -25,10 +25,11 @@
  For newer projects, it is advised to use lexer and parser generators.
  ")
  (depends 
-  ocaml 
+  (ocaml (>= 4.13.0)) 
   dune 
   ppxlib 
   (alcotest :with-test)
-  (ppx_deriving :with-test))
+  (ppx_deriving :with-test)
+  (camlp-streams :with-test))
  (tags
   ("stream parser")))

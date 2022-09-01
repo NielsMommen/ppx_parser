@@ -3,6 +3,7 @@
  (preprocess
   (pps ppxlib.metaquot))
  (libraries
+  camlp-streams
   ppxlib
   ppx_parser
   alcotest
