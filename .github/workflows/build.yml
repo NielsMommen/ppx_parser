@@ -17,7 +17,7 @@ jobs:
 
     runs-on: ${{ matrix.sys.os }}
 
-    name: Build - ${{ matrix.sys.os }} - ${{ matrix.ocaml-version }}
+    name: Build - ${{ matrix.sys.os }} - OCaml ${{ matrix.ocaml-version }}
 
     steps:
       - run: git config --global core.autocrlf input
@@ -34,7 +34,7 @@ jobs:
 
       - name: Install Opam
         run: |
-          bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
+          bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh) \n"
           opam init --no -c ${{ matrix.ocaml-version }}
           eval $(opam env)
 
