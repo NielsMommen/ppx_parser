@@ -1,0 +1,70 @@
+name: ppx_parser build
+
+on: [push, pull-request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        sys:
+          - { os: windows-latest, shell: 'C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr ''{0}''' }
+          - { os: ubuntu-18.04, shell: bash }
+          - { os: macos-10.15, shell: bash }
+        ocaml-version: [3.13.0, 3.14.0]
+    defaults:
+      run:
+        shell: ${{ matrix.sys.shell }}
+
+    runs-on: ${{ matrix.sys.os }}
+
+    name: Build - ${{ matrix.sys.os }} - ${{ matrix.ocaml-version }}
+
+    steps:
+      - run: git config --global core.autocrlf input
+        shell: bash
+
+      - uses: actions/checkout@v3
+
+      - name: Set up Cygwin
+        if: ${{ matrix.sys.os == 'windows-latest' }}
+        uses: egor-tensin/setup-cygwin@v3
+        with:
+          platform: x86
+          packages: curl
+
+      - name: Install Opam
+        run: |
+          bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
+          opam init --no -c ${{ matrix.ocaml-version }}
+          eval $(opam env)
+
+      - name: Install dune
+        run: |
+          opam install dune -y
+
+      - name: Install dependencies
+        run: |
+          opam install --deps-only -y ppx_parser
+
+      - name: Build
+        run: |
+          dune build
+
+      - name: Test
+        run: |
+          dune test
+
+      # keep permissions
+      - name: Create pp.exe tarball
+        run: |
+          tar -cvzf _build/install/default/lib/ppx_parser/ppx.exe ppx.tar.gz
+
+      - name: Produce shasum 256
+        run: |
+          shasum -a 256 ppx.tar.gz
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ppx_parser_binary
+          path: ppx.tar.gz
