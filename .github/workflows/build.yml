@@ -52,7 +52,7 @@ jobs:
 
       - name: Set up OCaml
         run: |
-          opam switch create . --no-install --packages ${{ matrix.ocaml-version }}
+          opam switch create . ${{ matrix.ocaml-version }} --no-install
 
       - name: Install dune
         run: |
