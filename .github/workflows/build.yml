@@ -5,11 +5,21 @@ on: [push, pull_request]
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         sys:
-          - { os: windows-latest, shell: 'C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr ''{0}''' }
-          - { os: ubuntu-18.04, shell: bash }
-          - { os: macos-10.15, shell: bash }
+          - { 
+              os: windows-latest, 
+              shell: 'C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr ''{0}''',
+            }
+          - { 
+              os: ubuntu-18.04, 
+              shell: bash, 
+            }
+          - { 
+              os: macos-10.15, 
+              shell: bash,
+            }
         ocaml-version: [3.13.0, 3.14.0]
     defaults:
       run:
@@ -32,11 +42,17 @@ jobs:
           platform: x86
           packages: curl
 
-      - name: Install Opam
+      - name: Download Opam
         run: |
-          bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh) \n"
-          opam init --no -c ${{ matrix.ocaml-version }}
-          eval $(opam env)
+          ./.github/scripts/install_opam.sh
+
+      - name: Init opam
+        run: |
+          opam init --auto-setup --bare --enable-shell-hook --disable-sandboxing
+
+      - name: Set up OCaml
+        run: |
+          opam switch create . --no-install --packages ${{ matrix.ocaml-version }}
 
       - name: Install dune
         run: |
