@@ -17,7 +17,7 @@
  (name ppx_parser)
  (synopsis "OCaml PPX extension for writing stream parsers")
  (description
-  "\n This library is an OCaml ppx rewriter for writing stream parser. \n Its notation is close to the notation of Camlp4 stream parsers. \n Hence, it can be used as a replacement for projects \n that still rely on the stream parser notation of Camlp4. \n \n For newer projects, it is advised to use lexer and parser generators.\n ")
+  "\n This library is an OCaml ppx rewriter for writing stream parsers. \n Its notation is close to the notation of Camlp4 stream parsers. \n Hence, it can be used as a replacement for projects \n that still rely on the stream parser notation of Camlp4. \n \n For newer projects, it is advised to use lexer and parser generators.\n ")
  (depends
   (ocaml
    (>= 4.13.0))
