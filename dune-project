@@ -2,7 +2,7 @@
 
 (name ppx_parser)
 
-(generate_opam_files true) 
+(generate_opam_files true)
 
 (source
  (github NielsMommen/ppx_parser))
@@ -16,20 +16,15 @@
 (package
  (name ppx_parser)
  (synopsis "OCaml PPX extension for writing stream parsers")
- (description "
- This library is an OCaml ppx rewriter for writing stream parser. 
- Its notation is close to the notation of Camlp4 stream parsers. 
- Hence, it can be used as a replacement for projects 
- that still rely on the stream parser notation of Camlp4. 
- 
- For newer projects, it is advised to use lexer and parser generators.
- ")
- (depends 
-  (ocaml (>= 4.13.0)) 
-  dune 
-  ppxlib 
+ (description
+  "\n This library is an OCaml ppx rewriter for writing stream parser. \n Its notation is close to the notation of Camlp4 stream parsers. \n Hence, it can be used as a replacement for projects \n that still rely on the stream parser notation of Camlp4. \n \n For newer projects, it is advised to use lexer and parser generators.\n ")
+ (depends
+  (ocaml
+   (>= 4.13.0))
+  dune
+  (ppxlib
+   (>= 0.27.0))
   (alcotest :with-test)
   (ppx_deriving :with-test)
   (camlp-streams :with-test))
- (tags
-  ("stream parser")))
+ (tags ("stream parser")))
