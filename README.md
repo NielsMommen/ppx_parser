@@ -114,7 +114,7 @@ let rec parse_expr = function%parser
 #### ... `as` ...
 An alias can be used when the right-hand sing of the binding is a simple function name:
 ```ocaml
-let rec parse_op lhs = function% parser
+let rec parse_op lhs = function%parser
     | [Add; parse_expr as rhs] -> lhs + rhs
     | [Sub; parse_expr as rhs] -> lhs - rhs
     | [] -> lhs
