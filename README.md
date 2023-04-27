@@ -72,7 +72,7 @@ Extension `%let` (shorthand `%l`) can be used inside a parser function list case
 ```ocaml
 type tok = Int of int | Add | Sub
 
-let rec parse_op lhs = function% parser
+let rec parse_op lhs = function%parser
     | [Add; [%let rhs = parse_expr]] -> lhs + rhs
     | [Sub; [%let rhs = parse_expr]] -> lhs - rhs
     | [] -> lhs
