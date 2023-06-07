@@ -35,7 +35,7 @@ Add the following field to your `library`, `executable` or `test` stanza in your
 ```
 ## Usage
 ### `%parser`
-The `%parser` extension can be used to mark a `function` as a stream parser. Each function case represents a sequence of stream elements that have to be matched in order to produce the result on the right-hand side:
+The `%parser` extension can be used to mark a `function` as a [stream](https://github.com/ocaml/camlp-streams) parser. Each function case represents a sequence of stream elements that have to be matched in order to produce the result on the right-hand side:
 ```ocaml
 let stupid_int_parser = function%parser
     | [1; 2; 3; 4] -> "1, 2, 3, 4"
@@ -48,7 +48,7 @@ let result = stupid_int_parser stream
 (* "3, 2, 1" *)
 ```
 It does so by peeking at the first element of the stream.
-The function case where the first element of the list matches the peeked element is selected (`[3; 2; 1]` in the example). A `Stream.Error "Parse exception."` is thrown if the remainder of the selected list case does not match the remainder of the stream. Whenever an element is matched, it is removed from the stream.
+The function case where the first element of the list matches the peeked element is selected (`[3; 2; 1]` in the example). A `Stream.Error "Parse error."` is thrown if the remainder of the selected list case does not match the remainder of the stream. Whenever an element is matched, it is removed from the stream.
 
 If no function case is found where the first element of the list matches the first element of the stream, a `Stream.Failure` is raised.
 
