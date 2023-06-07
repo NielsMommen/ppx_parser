@@ -123,7 +123,7 @@ and parse_expr = function%parser
     | [Int i; [%let op = parse_op i]] -> op
 ```
 
-### Gaurds
+### Guards
 Guards can be used as in *regular* pattern matching. A guard must evaluate to `true` for a match case to be selected:
 ```ocaml
 let parser i = function%parser
