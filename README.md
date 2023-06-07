@@ -122,3 +122,18 @@ let rec parse_op lhs = function%parser
 and parse_expr = function%parser
     | [Int i; [%let op = parse_op i]] -> op
 ```
+
+### Gaurds
+Guards can be used as in *regular* pattern matching. A guard must evaluate to `true` for a match case to be selected:
+```ocaml
+let parser i = function%parser
+    | [ 1; 2; 3 ] when i = 0 -> -1
+    | [ 1; 2; 3 ] when i = 1 -> 0
+    | [ 1; 2; 3 ] when i = 2 -> 1
+
+let stream = Stream.of_list [ 1; 2; 3 ]
+
+let result = parser 1 stream
+(* 0 *)
+```
+Note that a guard of a parser function case is evaluated before matching the first element of that function case with the stream.

@@ -3,7 +3,7 @@ opam-version: "2.0"
 synopsis: "OCaml PPX extension for writing stream parsers"
 description: """
 
- This library is an OCaml ppx rewriter for writing stream parser. 
+ This library is an OCaml ppx rewriter for writing stream parsers. 
  Its notation is close to the notation of Camlp4 stream parsers. 
  Hence, it can be used as a replacement for projects 
  that still rely on the stream parser notation of Camlp4. 

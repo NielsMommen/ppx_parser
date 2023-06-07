@@ -188,6 +188,21 @@ let test_bindings () =
   let actual = [ parser strm; parser strm; parser strm; parser strm ] in
   Alcotest.(check' (list int)) ~msg:"pattern bindings" ~expected ~actual
 
+let test_guards () =
+  let parser i =
+    function%parser
+    | [ 1; 2; 3 ] when i = 0 -> -1
+    | [ 1; 2; 3 ] when i = 1 -> 0
+    | [ 1; 2; 3 ] when i = 2 -> 1
+    | [ 1; 2; 3 ] -> i
+  in
+  let mk_strm () = Stream.of_list [ 1; 2; 3 ] in
+  let actual =
+    [ 0; 1; 2; -5; 10 ] |> List.map (fun i -> parser i (mk_strm ()))
+  in
+  let expected = [ -1; 0; 1; -5; 10 ] in
+  Alcotest.(check' (list int)) ~msg:"guards" ~expected ~actual
+
 let tests =
   let open Alcotest in
   [
@@ -200,4 +215,5 @@ let tests =
     test_case "consume_spaces_get_char_code_let_parser" `Quick test_char_codes3;
     test_case "split_tuples" `Quick test_split_tuples;
     test_case "split_record_tuple_fields" `Quick test_split_rec_tuple_fields;
+    test_case "guards" `Quick test_guards;
   ]
