@@ -8,6 +8,14 @@ let test_empty_parser () =
   in
   check_eq ~expected ~actual "empty"
 
+let test_empty_parser_match () =
+  let actual = f [%expr match %parser s with [] -> 1] in
+  let expected =
+    [%expr
+      (function ppx____parser____stream____ -> ( match [%e peek] with _ -> 1)) s]
+  in
+  check_eq ~expected ~actual "empty_match"
+
 let test_wildcard_parser () =
   let actual = f [%expr function%parser [ _ ] -> 1] in
   let expected =
@@ -94,6 +102,7 @@ let tests =
   let open Alcotest in
   [
     test_case "empty" `Quick test_empty_parser;
+    test_case "empty_match" `Quick test_empty_parser_match;
     test_case "pop_any" `Quick test_wildcard_parser;
     test_case "identity" `Quick test_identity_parser;
     test_case "seq" `Quick test_seq_parser;

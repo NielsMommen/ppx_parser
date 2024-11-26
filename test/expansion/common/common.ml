@@ -25,4 +25,4 @@ let f e =
     ~on_error:(fun () ->
       Ppx_parser_lib.Err.err_expr_node ~loc:e.pexp_loc "Invalid test pattern.")
     e
-    (Ppx_parser_lib.Parser.expand_function ~loc)
+    (Ppx_parser_lib.Parser.expand_parser ~loc)

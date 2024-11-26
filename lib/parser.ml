@@ -156,6 +156,12 @@ let expand_function ~loc cases =
   let match_expr = Ast_builder.Default.pexp_match ~loc to_match_expr cases in
   [%expr function ppx____parser____stream____ -> [%e match_expr]]
 
-let expand_function_from_ctxt ~ctxt cases =
+let expand_parser ~loc = function
+  | (Some e), cases ->
+    Ast_builder.Default.pexp_apply ~loc (expand_function ~loc cases) [(Nolabel, e)]
+  | None, cases ->
+    expand_function ~loc cases
+
+let expand_parser_from_ctxt ~ctxt =
   let loc = Expansion_context.Extension.extension_point_loc ctxt in
-  expand_function ~loc cases
+  expand_parser ~loc
