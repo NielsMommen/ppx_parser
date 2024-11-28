@@ -108,7 +108,7 @@ module Make (Args : LetArgs) = struct
 
   let expand_let_payload ~loc = function
     | PStr [ { pstr_desc = Pstr_eval (e, []); _ } ] -> expand_eval e
-    | _ -> (Err.err_expr_node ~loc "Invalid '%%let' payload", [%pat? _])
+    | _ -> (Err.err_expr_node ~loc "Invalid '%%let' payload.", [%pat? _])
 end
 
 module LetHd = Make (struct
