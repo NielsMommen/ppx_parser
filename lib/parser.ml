@@ -40,8 +40,31 @@ let expand_list_elem ~loc cont_expr = function
         | [%p some_pat ~loc pat] -> [%e junk ~loc cont_expr]
         | _ -> [%e raise_err_exn ~loc]]
 
+let bind_stream_in ~loc var_pat e2 =
+  [%expr
+    let [%p var_pat] = ppx____parser____stream____ in
+    [%e e2]]
+
+let expand_stream_payload ~loc = function
+  | PStr [ {
+      pstr_desc = Pstr_eval ({
+        pexp_desc = Pexp_ident { txt = Lident var; loc = var_loc };
+        pexp_loc = ident_loc;
+        _;
+      }, []); _
+    } ] ->
+      Ast_builder.Default.ppat_var ~loc:ident_loc { txt = var; loc = var_loc }
+  | _ -> Err.err_pat_node ~loc "Invalid '%%stream' payload"
+
 let rec expand_list_seq_tl ~loc result_expr = function
   | [%pat? []] -> result_expr
+  | [%pat? [%p? {
+      ppat_desc = Ppat_extension ({ txt = "stream" | "s"; _ }, payload);
+      ppat_loc;
+      _;
+    }] :: []] ->
+      let pat = expand_stream_payload ~loc:ppat_loc payload in
+      bind_stream_in ~loc:ppat_loc pat result_expr
   | [%pat? [%p? hd] :: [%p? tl]] ->
       let cont_expr = expand_list_seq_tl ~loc result_expr tl in
       expand_list_elem ~loc:hd.ppat_loc cont_expr hd
@@ -72,13 +95,21 @@ let expand_list_seq ~loc ctxt { pc_lhs; pc_guard; pc_rhs } to_match_expr
     in
     [ match_case; no_match_case ]
   in
+  let add_case pc_lhs pc_rhs =
+    let case = { pc_lhs; pc_guard; pc_rhs } in
+    match pc_guard with None -> case :: [] | _ -> prepend_to_cases case
+  in
   match pc_lhs with
   | [%pat? []] ->
-      let pat = [%pat? _] in
-      let case = { pc_lhs = pat; pc_guard; pc_rhs } in
-      let cases =
-        match pc_guard with None -> case :: [] | _ -> prepend_to_cases case
-      in
+      let cases = add_case [%pat? _] pc_rhs in
+      (ctxt, to_match_expr, cases)
+  | [%pat? [%p? {
+      ppat_desc = Ppat_extension ({ txt = "stream" | "s"; _ }, payload);
+      ppat_loc;
+      _;
+    }] :: []] ->
+      let stream_pat = expand_stream_payload ~loc:ppat_loc payload in
+      let cases = add_case [%pat? _] (bind_stream_in ~loc stream_pat pc_rhs) in
       (ctxt, to_match_expr, cases)
   | [%pat? [%p? hd] :: [%p? tl]] -> (
       let on_match_expr = expand_list_seq_tl ~loc pc_rhs tl in
