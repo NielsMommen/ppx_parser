@@ -123,6 +123,19 @@ and parse_expr = function%parser
     | [Int i; [%let op = parse_op i]] -> op
 ```
 
+#### Binding the stream
+
+For convenience, the stream itself can also be bound to a variable using the extension `%stream` (shorthand `%s`):
+
+```ocaml
+let parse = function%parser
+    | [1; 2; 3; [%stream s]] ->
+        continue_parse s;
+        "1, 2, 3, 4"
+```
+
+The `[%stream s]` expression must be the final element of the pattern.
+
 ### Guards
 Guards can be used as in *regular* pattern matching. A guard must evaluate to `true` for a match case to be selected:
 ```ocaml
