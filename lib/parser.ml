@@ -46,7 +46,7 @@ let bind_stream_in ~loc var_pat e2 =
     [%e e2]]
 
 let error_stream_binding_end_of_pattern ~loc =
-  Err.err_expr_node ~loc "'%%stream' binding must come at the end of the pattern"
+  Err.err_expr_node ~loc "The '%%stream' binding can only be used at the end of the pattern"
 
 let expand_stream_payload ~loc = function
   | PStr [ {

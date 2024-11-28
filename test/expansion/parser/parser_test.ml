@@ -70,9 +70,9 @@ let test_bind_stream_error_parser () =
           match [%e peek] with
           | Some 1 ->
             let () = [%e junk] in
-            [%ocaml.error "'%stream' binding must come at the end of the pattern"]
+            [%ocaml.error "The '%stream' binding can only be used at the end of the pattern"]
           | _ ->
-            [%ocaml.error "'%stream' binding must come at the end of the pattern"])]
+            [%ocaml.error "The '%stream' binding can only be used at the end of the pattern"])]
   in
   check_eq ~expected ~actual "bind_stream_error"
 
