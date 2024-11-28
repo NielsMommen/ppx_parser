@@ -45,6 +45,9 @@ let bind_stream_in ~loc var_pat e2 =
     let [%p var_pat] = ppx____parser____stream____ in
     [%e e2]]
 
+let error_stream_binding_end_of_pattern ~loc =
+  Err.err_expr_node ~loc "'%%stream' binding must come at the end of the pattern"
+
 let expand_stream_payload ~loc = function
   | PStr [ {
       pstr_desc = Pstr_eval ({
@@ -65,6 +68,11 @@ let rec expand_list_seq_tl ~loc result_expr = function
     }] :: []] ->
       let pat = expand_stream_payload ~loc:ppat_loc payload in
       bind_stream_in ~loc:ppat_loc pat result_expr
+  | [%pat? [%p? {
+      ppat_desc = Ppat_extension ({ txt = "stream" | "s"; _ }, _);
+      _;
+    }] :: [%p? { ppat_loc = tl_loc; _;}]] ->
+      error_stream_binding_end_of_pattern ~loc:tl_loc
   | [%pat? [%p? hd] :: [%p? tl]] ->
       let cont_expr = expand_list_seq_tl ~loc result_expr tl in
       expand_list_elem ~loc:hd.ppat_loc cont_expr hd
@@ -110,6 +118,12 @@ let expand_list_seq ~loc ctxt { pc_lhs; pc_guard; pc_rhs } to_match_expr
     }] :: []] ->
       let stream_pat = expand_stream_payload ~loc:ppat_loc payload in
       let cases = add_case [%pat? _] (bind_stream_in ~loc stream_pat pc_rhs) in
+      (ctxt, to_match_expr, cases)
+  | [%pat? [%p? {
+      ppat_desc = Ppat_extension ({ txt = "stream" | "s"; _ },_);
+      _;
+    }] :: [%p? {ppat_loc = tl_loc; _}]] ->
+      let cases = add_case [%pat? _] (error_stream_binding_end_of_pattern ~loc:tl_loc) in
       (ctxt, to_match_expr, cases)
   | [%pat? [%p? hd] :: [%p? tl]] -> (
       let on_match_expr = expand_list_seq_tl ~loc pc_rhs tl in

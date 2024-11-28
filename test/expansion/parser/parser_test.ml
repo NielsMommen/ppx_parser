@@ -61,6 +61,21 @@ let test_bind_stream_parser () =
   in
   check_eq ~expected ~actual "bind_stream"
 
+let test_bind_stream_error_parser () =
+  let actual = f [%expr function%parser [ 1; [%stream s]; 1 ] -> do_something s | [ [%s s]; 1 ] -> do_something s ] in
+  let expected =
+    [%expr
+      function
+      | ppx____parser____stream____ -> (
+          match [%e peek] with
+          | Some 1 ->
+            let () = [%e junk] in
+            [%ocaml.error "'%stream' binding must come at the end of the pattern"]
+          | _ ->
+            [%ocaml.error "'%stream' binding must come at the end of the pattern"])]
+  in
+  check_eq ~expected ~actual "bind_stream_error"
+
 let test_seq_parser () =
   let actual =
     f [%expr function%parser [ 1; 2; 3 ] -> "1" | [ 4; 2 ] -> "2" | [] -> "0"]
@@ -121,6 +136,7 @@ let tests =
     test_case "empty" `Quick test_empty_parser;
     test_case "empty_match" `Quick test_empty_parser_match;
     test_case "bind_stream" `Quick test_bind_stream_parser;
+    test_case "bind_stream_error" `Quick test_bind_stream_error_parser;
     test_case "pop_any" `Quick test_wildcard_parser;
     test_case "identity" `Quick test_identity_parser;
     test_case "seq" `Quick test_seq_parser;
