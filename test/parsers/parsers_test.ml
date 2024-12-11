@@ -156,7 +156,7 @@ let test_split_rec_tuple_fields () =
       (fun fmt r ->
         show_record_tuple lst_formatter lst_formatter r
         |> Format.pp_print_string fmt)
-      (equal_record_tuple (List.equal Int.equal) (List.equal Int.equal))
+      (equal_record_tuple (Equal.list_eq Int.equal) (Equal.list_eq Int.equal))
   in
   Alcotest.(check' testbl) ~msg:"split record tuple fields" ~actual ~expected
 
