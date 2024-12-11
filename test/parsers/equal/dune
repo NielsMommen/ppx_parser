@@ -1,0 +1,14 @@
+(rule
+ (action
+  (copy equal.default.ml equal.ml))
+ (enabled_if
+  (>= %{ocaml_version} 4.13.0)))
+
+(rule
+ (action
+  (copy equal.fallback.ml equal.ml))
+ (enabled_if
+  (< %{ocaml_version} 4.13.0)))
+
+(library
+ (name equal))

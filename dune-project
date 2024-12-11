@@ -20,7 +20,7 @@
   "\n This library is an OCaml ppx rewriter for writing stream parsers. \n Its notation is close to the notation of Camlp4 stream parsers. \n Hence, it can be used as a replacement for projects \n that still rely on the stream parser notation of Camlp4. \n \n For newer projects, it is advised to use lexer and parser generators.\n ")
  (depends
   (ocaml
-   (>= 4.13.0))
+   (>= 4.8.0))
   dune
   (ppxlib
    (>= 0.27.0))
