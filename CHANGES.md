@@ -6,6 +6,7 @@
 
 ### Changed
 - Relax ocaml constraint to 4.8.0
+- Alcotest version
 - Documentation
 
 ## 0.1.1
