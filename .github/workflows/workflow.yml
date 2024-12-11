@@ -14,8 +14,12 @@ jobs:
           - ubuntu-latest
           - windows-latest
         ocaml-compiler:
+          - 4.8.x
           - 4.13.x
           - 4.14.x
+        exclude:
+          - os: windows-latest
+            ocaml-compiler: 4.8.x
 
     runs-on: ${{ matrix.os }}
 
@@ -24,7 +28,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup OCaml ${{ matrix.ocaml-compiler }}
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
 
