@@ -24,7 +24,10 @@
   dune
   (ppxlib
    (>= 0.27.0))
-  (alcotest :with-test)
+  (alcotest
+   (and
+    :with-test
+    (>= 1.2.0)))
   (ppx_deriving :with-test)
   (camlp-streams :with-test))
  (tags ("stream parser")))
