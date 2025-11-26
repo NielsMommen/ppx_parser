@@ -2,7 +2,7 @@ open Ppxlib
 
 let ppx_parser_pat = Ast_pattern.(single_expr_payload
   (alt
-    (pexp_function __ |> map1 ~f:(fun cases -> (None, cases)) )
+    (pexp_function drop drop (pfunction_cases __ drop drop) |> map1 ~f:(fun cases -> (None, cases)) )
     (pexp_match __ __ |> map2 ~f:(fun e cases -> (Some e, cases)) ))
   )
 
