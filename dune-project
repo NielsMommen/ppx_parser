@@ -23,7 +23,7 @@
    (>= 4.8.0))
   dune
   (ppxlib
-   (>= 0.27.0))
+   (>= 0.36.0))
   (alcotest
    (and
     :with-test
