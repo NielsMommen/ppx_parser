@@ -1,3 +1,8 @@
+## 0.2.1
+### Changed
+- Fix compatibility with ppxlib 0.36 (#11)
+  - Bump minimum ppxlib version to 0.36.0 (from 0.27.0)
+
 ## 0.2.0
 ### Added
 - Bind stream to variable (#5)
